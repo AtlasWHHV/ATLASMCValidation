@@ -1,0 +1,26 @@
+// Make "pretty" versions of all the MC Validation plots.
+// This is dumb in the sense that it will just dump everything in the file.
+
+runs = ["191300", "191301"];
+MCs = ["MC12", "MC15"];
+
+runTitle = {
+	"191300" => "191300: mH=300 GeV mPiv = 100 GeV",
+	"191301" => "191301: mH=600 GeV mPiv = 150 GeV"
+	};
+
+for (run, runs) {
+  for (mc, MCs) {
+	f = file("{run}.{mc}.plots.root");
+
+
+	allh = f.GetAll(".*");
+
+	r = for (h, allh) {
+	  h.plot()
+	   .Text("ATLAS Monte Carlo - 13 TeV")
+	   .Text("{mc} {runTitle[run]}")
+	   .filename(run + "." + mc + "-" + h.Name());
+	};
+  };
+};

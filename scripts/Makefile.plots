@@ -1,0 +1,28 @@
+# Make the plots from the xAOD
+# Not in same make file as we are in a different directory.
+# Everything should be setup by the time this is called!
+#
+
+# Common defines
+MCRESULT = $(PWD)
+MCTYPE = MC14
+
+all: 191300 191301
+
+191300: ./191300.$(MCTYPE).plots.root
+191301: ./191301.$(MCTYPE).plots.root
+
+# Common rules to run this
+.PHONY: all
+.SECONDARY:
+
+./%.plots.root: $(MCRESULT)/%.plots.root
+	cp $< $@
+	
+# build and copy the file over.
+# Done in one step so that we don't have ot deal with make file intermediate results.
+$(MCRESULT)/%.plots.root: $(MCRESULT)/%.xAOD.pool.root
+	rc find_packages
+	rc compile
+	validationPlots $<
+	cp validation.root $@
